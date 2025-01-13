@@ -20,6 +20,7 @@ int main()
     printValue(gfg); // gfg = 50
     #qq
     PrintLineNum;
+    printf("#hi");
     return 0;
 
 }
