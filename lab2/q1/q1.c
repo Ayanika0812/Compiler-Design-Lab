@@ -38,3 +38,10 @@ int main() {
     printf("Processing complete. Output written to %s.\n", outputFileName);
     return 0;
 }
+
+/* cc q1.c
+student@oslab-02:~/220905128/lab2/q1$ ./a.out
+Enter the name of the input file: q1input.txt
+Enter the name of the output file: q1out.txt
+Processing complete. Output written to q1out.txt.
+*/
