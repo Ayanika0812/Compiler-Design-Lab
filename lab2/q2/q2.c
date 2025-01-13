@@ -46,3 +46,9 @@ int main() {
     printf("Preprocessor directives removed and output written to %s\n", output_file_name);
     return 0;
 }
+/*cc q2.c
+student@oslab-02:~/220905128/lab2/q2$ ./a.out
+Enter the input file name: q2in.c
+Enter the output file name: q2out.c
+Preprocessor directives removed and output written to q2out.c
+*/
