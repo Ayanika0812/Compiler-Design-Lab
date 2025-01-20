@@ -255,3 +255,23 @@ int main() {
     fclose(fp);
     return 0;
 }
+/*
+./a.out
+<int, 1, 18, keyword>
+<main, 1, 22, identifier>
+<(, 1, 26, special_symbol>
+<), 1, 27, special_symbol>
+<{, 2, 1, special_symbol>
+<char, 3, 1, keyword>
+<a, 3, 6, identifier>
+<;, 3, 7, special_symbol>
+<printf, 4, 1, identifier>
+<(, 4, 7, special_symbol>
+<"HI I AM Q2 INPUT\n", 4, 8, string_literal>
+<), 4, 28, special_symbol>
+<;, 4, 29, special_symbol>
+<return, 5, 1, keyword>
+<0, 5, 8, numerical_constant>
+<;, 5, 9, special_symbol>
+<}, 6, 1, special_symbol>
+*/
