@@ -4,24 +4,18 @@
 #include <stdlib.h>
 
 #define MAX_TOKEN_LENGTH 100
-
-// Token structure
 struct token {
-    char token_name[MAX_TOKEN_LENGTH];  // Token value
-    unsigned int row, col;              // Row and column number
-    char type[50];                      // Type of token (keyword, operator, id, etc.)
+    char token_name[MAX_TOKEN_LENGTH]; 
+    unsigned int row, col;              
+    char type[50];                    
 };
-
-// Function to create a token
 void createToken(struct token *t, const char *token_name, unsigned int row, unsigned int col, const char *type) {
     strcpy(t->token_name, token_name);
     t->row = row;
     t->col = col;
-    strcpy(t->type, type);  // Store the type
-    printf("<%s, %u, %u, %s>\n", t->token_name, t->row, t->col, t->type);  // Print token
+    strcpy(t->type, type);
+    printf("<%s, %u, %u, %s>\n", t->token_name, t->row, t->col, t->type);
 }
-
-// Check if a string is a keyword
 int isKeyword(const char *str) {
     char *keywords[] = {
         "int", "char", "if", "else", "while", "for", "return", "void", "break", "continue", 
@@ -29,41 +23,33 @@ int isKeyword(const char *str) {
     };
     for (int i = 0; i < 17; i++) {
         if (strcmp(str, keywords[i]) == 0) {
-            return 1;  // It's a keyword
+            return 1;  
         }
     }
-    return 0;  // Not a keyword
+    return 0; 
 }
-
-// Check if a string is a valid identifier
 int isIdentifier(const char *str) {
     if (isalpha(str[0]) || str[0] == '_') {
         for (int i = 1; i < strlen(str); i++) {
             if (!isalnum(str[i]) && str[i] != '_') {
-                return 0;  // Invalid identifier
+                return 0; 
             }
         }
-        return 1;  // Valid identifier
+        return 1; 
     }
-    return 0;  // Not an identifier
+    return 0; 
 }
-
-// Check if a string is a numerical constant
 int isNumeric(const char *str) {
     for (int i = 0; i < strlen(str); i++) {
         if (!isdigit(str[i]) && str[i] != '.') {
-            return 0;  // Not a number
+            return 0;
         }
     }
-    return 1;  // It's a number
+    return 1;
 }
-
-// Check if a string is a valid string literal
 int isStringLiteral(const char *str) {
     return str[0] == '"' && str[strlen(str) - 1] == '"';
 }
-
-// Skip whitespace characters and return the next non-whitespace character
 int skipWhitespace(FILE *fp, char *c, unsigned int *row, unsigned int *col) {
     while (isspace(*c)) {
         if (*c == '\n') {
@@ -76,16 +62,14 @@ int skipWhitespace(FILE *fp, char *c, unsigned int *row, unsigned int *col) {
     }
     return *c;
 }
-
-// Function to handle multi-line comments (/* ... */)
 void skipMultiLineComment(FILE *fp, char *c, unsigned int *row, unsigned int *col) {
     while (*c != EOF) {
         if (*c == '*') {
-            char nextChar = fgetc(fp); // Get the next character
+            char nextChar = fgetc(fp);
             if (nextChar == '/') {
-                break; // End of comment
+                break; 
             }
-            ungetc(nextChar, fp); // If not '/', put the character back
+            ungetc(nextChar, fp);
         }
         if (*c == '\n') {
             (*row)++;
@@ -96,8 +80,6 @@ void skipMultiLineComment(FILE *fp, char *c, unsigned int *row, unsigned int *co
         *c = fgetc(fp);
     }
 }
-
-// Function to handle single-line comments (//)
 void skipSingleLineComment(FILE *fp, char *c, unsigned int *row, unsigned int *col) {
     while (*c != '\n' && *c != EOF) {
         if (*c == '\n') {
@@ -109,8 +91,6 @@ void skipSingleLineComment(FILE *fp, char *c, unsigned int *row, unsigned int *c
         *c = fgetc(fp);
     }
 }
-
-// Function to handle preprocessor directives (e.g., #define, #include)
 void skipPreprocessorDirective(FILE *fp, char *c, unsigned int *row, unsigned int *col) {
     while (*c != '\n' && *c != EOF) {
         if (*c == '\n') {
@@ -122,12 +102,10 @@ void skipPreprocessorDirective(FILE *fp, char *c, unsigned int *row, unsigned in
         *c = fgetc(fp);
     }
 }
-
-// Function to get the next token from the input file
-int getNextToken(FILE *fp, struct token *t, unsigned int *row, unsigned int *col) {
+int getNextToken(FILE *fp, struct token *t, unsigned int *row, unsigned int *col, FILE *outFile) {
     char c = fgetc(fp);
     if (c == EOF) {
-        return 0;  // End of file
+        return 0;
     }
 
     c = skipWhitespace(fp, &c, row, col);
@@ -137,22 +115,18 @@ int getNextToken(FILE *fp, struct token *t, unsigned int *row, unsigned int *col
         char nextChar = fgetc(fp);
         if (nextChar == '/') {
             skipSingleLineComment(fp, &c, row, col);
-            return getNextToken(fp, t, row, col);  // Recursively call to find next token
+            return getNextToken(fp, t, row, col, outFile); 
         }
         if (nextChar == '*') {
             skipMultiLineComment(fp, &c, row, col);
-            return getNextToken(fp, t, row, col);  // Recursively call to find next token
+            return getNextToken(fp, t, row, col, outFile);
         }
-        ungetc(nextChar, fp);  // Put back the second '/'
+        ungetc(nextChar, fp);
     }
-
-    // Skip preprocessor directives
     if (c == '#') {
         skipPreprocessorDirective(fp, &c, row, col);
-        return getNextToken(fp, t, row, col);  // Recursively call to find next token
+        return getNextToken(fp, t, row, col, outFile);
     }
-
-    // Handle string literals
     if (c == '"') {
         char str[MAX_TOKEN_LENGTH];
         int i = 0;
@@ -168,12 +142,10 @@ int getNextToken(FILE *fp, struct token *t, unsigned int *row, unsigned int *col
         t->row = *row;
         t->col = *col;
         strcpy(t->type, "string_literal");
-        printf("<%s, %u, %u, %s>\n", t->token_name, t->row, t->col, t->type);
+        fprintf(outFile, "<%s, %u, %u, %s>\n", t->token_name, t->row, t->col, t->type);
         (*col) += i;
         return 1;
     }
-
-    // Handle identifiers, keywords, and numerical constants
     if (isalpha(c) || c == '_') {
         char str[MAX_TOKEN_LENGTH];
         int i = 0;
@@ -197,12 +169,10 @@ int getNextToken(FILE *fp, struct token *t, unsigned int *row, unsigned int *col
             t->col = *col;
             strcpy(t->type, "identifier");
         }
-        printf("<%s, %u, %u, %s>\n", t->token_name, t->row, t->col, t->type);
+        fprintf(outFile, "<%s, %u, %u, %s>\n", t->token_name, t->row, t->col, t->type);
         (*col) += i;
         return 1;
     }
-
-    // Handle numerical constants
     if (isdigit(c)) {
         char str[MAX_TOKEN_LENGTH];
         int i = 0;
@@ -219,59 +189,45 @@ int getNextToken(FILE *fp, struct token *t, unsigned int *row, unsigned int *col
         t->row = *row;
         t->col = *col;
         strcpy(t->type, "numerical_constant");
-        printf("<%s, %u, %u, %s>\n", t->token_name, t->row, t->col, t->type);
+        fprintf(outFile, "<%s, %u, %u, %s>\n", t->token_name, t->row, t->col, t->type);
         (*col) += i;
         return 1;
     }
-
-    // Handle special symbols (operators, punctuation)
     if (ispunct(c)) {
         char str[2] = {c, '\0'};
         strcpy(t->token_name, str);
         t->row = *row;
         t->col = *col;
         strcpy(t->type, "special_symbol");
-        printf("<%s, %u, %u, %s>\n", t->token_name, t->row, t->col, t->type);
+        fprintf(outFile, "<%s, %u, %u, %s>\n", t->token_name, t->row, t->col, t->type);
         (*col)++;
         return 1;
     }
 
-    return 0;  // Invalid token or EOF
+    return 0;
 }
 
 int main() {
-    FILE *fp = fopen("q2in.c", "r");  // Open a C file for lexing
+    FILE *fp = fopen("q2in.c", "r");
     if (fp == NULL) {
         printf("Cannot open file.\n");
         return 1;
     }
 
+    FILE *outFile = fopen("output.diff", "w");
+    if (outFile == NULL) {
+        printf("Cannot open output file.\n");
+        fclose(fp);
+        return 1;
+    }
+
     struct token t;
     unsigned int row = 1, col = 1;
-    while (getNextToken(fp, &t, &row, &col)) {
-        // Tokens are printed in getNextToken()
+    while (getNextToken(fp, &t, &row, &col, outFile)) {
+        // Process tokens
     }
 
     fclose(fp);
+    fclose(outFile);
     return 0;
 }
-/*
-./a.out
-<int, 1, 18, keyword>
-<main, 1, 22, identifier>
-<(, 1, 26, special_symbol>
-<), 1, 27, special_symbol>
-<{, 2, 1, special_symbol>
-<char, 3, 1, keyword>
-<a, 3, 6, identifier>
-<;, 3, 7, special_symbol>
-<printf, 4, 1, identifier>
-<(, 4, 7, special_symbol>
-<"HI I AM Q2 INPUT\n", 4, 8, string_literal>
-<), 4, 28, special_symbol>
-<;, 4, 29, special_symbol>
-<return, 5, 1, keyword>
-<0, 5, 8, numerical_constant>
-<;, 5, 9, special_symbol>
-<}, 6, 1, special_symbol>
-*/
