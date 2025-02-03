@@ -29,3 +29,20 @@ int main() {
 int yywrap() {
     return 1;  // End of input
 }
+
+
+
+/*
+student@oslab-02:~/220905128/lab5$ flex q2.l
+student@oslab-02:~/220905128/lab5$ gcc lex.yy.c -o q2
+student@oslab-02:~/220905128/lab5$ ./q2
+Enter text (Ctrl+D to end input):
+Hello
+This is Lab5
+CD lab
+
+Words: 6
+Characters: 26
+Blanks (spaces/tabs): 3
+Lines: 3
+*/
