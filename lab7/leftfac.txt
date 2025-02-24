@@ -1,0 +1,10 @@
+
+
+
+identifier-list -> id identifier-list'
+identifier-list' -> epsilon | ,identifier-list
+
+
+
+assign_stat -> id assign_stat'
+assign_stat' -> =id | =num
