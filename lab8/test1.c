@@ -10,3 +10,9 @@ main() {
         z = 'a';
     }
 }
+
+/*
+.\q1.exe test1.c
+Parsing successful!
+
+    */
