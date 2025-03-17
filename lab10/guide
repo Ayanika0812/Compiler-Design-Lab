@@ -1,0 +1,32 @@
+
+BISON->rule section -> grammar s it is  (no left factoring or left recursion)
+       action
+       .y extension
+    keyword->bison 
+    
+    every bison program -> write flex program  
+
+
+
+
+
+
+
+writeup -> 30mins
+execution -> remaining
+
+1)write (bison/flex) RDP(execute)
+
+2)write lexical/parser (execute)
+
+
+
+lab 4 additional  
+
+generate context free grammar
+
+switch statement / 
+
+lexical analyser and symbol table
+
+parser table
