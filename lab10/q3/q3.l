@@ -13,3 +13,12 @@
 int yywrap() {
     return 1;
 }
+
+/*
+
+yytext	Holds the matched string (e.g., "42", "+")
+yylval	Stores the numerical value for Bison (e.g., 42 for NUMBER)
+atoi(yytext)	Converts a string ("42") into an integer (42)
+yytext[0]	Returns the first character of yytext (e.g., '+')
+
+*/
